@@ -1,12 +1,17 @@
-# MakeMKV selection syntax
+# MakeMKV track selection translator
+
+Translates a selection string to plain English. Serves as an example Elm project.
+
+## MakeMKV selection syntax
 
 Reference: [MakeMKV forum – Changing default track selection](https://forum.makemkv.com/forum/viewtopic.php?t=4386)
 
-## Selection string
+### Selection string
 
-Comma-separated list of tokens. Each token: **{action}:{condition}**. Rules are evaluated left to right. The condition is a boolean expression; parentheses and the operators below are allowed.
+Comma-separated list of tokens. Each token: **{action}:{condition}**. Rules are evaluated left to
+right. The condition is a boolean expression; parentheses and the operators below are allowed.
 
-### Actions
+#### Actions
 
 | Action | Meaning |
 |--------|--------|
@@ -16,7 +21,7 @@ Comma-separated list of tokens. Each token: **{action}:{condition}**. Rules are 
 | `-N`   | Subtract N from track weight |
 | `=N`   | Set track weight to N |
 
-### Operators in conditions
+#### Operators in conditions
 
 | Operator | Meaning |
 |----------|--------|
@@ -26,7 +31,7 @@ Comma-separated list of tokens. Each token: **{action}:{condition}**. Rules are 
 | `!`  | Logical NOT |
 | `~`  | Alias for `!` (NOT) |
 
-### Condition tokens
+#### Condition tokens
 
 - **all** – always matches  
 - **xxx** – any ISO 639-2/639-3 3-letter language code (e.g. eng, fra, deu)  
@@ -45,16 +50,16 @@ Comma-separated list of tokens. Each token: **{action}:{condition}**. Rules are 
 - **nolang** – no language set  
 - **single** – single audio track (extension)
 
-### Example
+#### Example
 
 ```
 -sel:all,+sel:(favlang|nolang),-sel:(havemulti|havecore),=100:all,-10:favlang
 ```
 
-## Naming template (reference)
+<!--## Naming template (reference)
 
 Output naming format (separate from selection):
 
 ```
 04-{:N2}-{NAME1}{-:CMNT1}{-:DT}{title:+DFLT}
-```
+```-->
