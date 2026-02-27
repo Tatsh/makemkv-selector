@@ -252,13 +252,8 @@ splitParens str depth =
     Nothing ->
       ( "", "" )
     Just ( ')', rest ) ->
-      if depth == 0 then
-        ( "", rest )
-      else
-        let
-          ( inner, after ) = splitParens rest (depth - 1)
-        in
-        ( ")" ++ inner, after )
+      -- At any depth, ')' closes the current group; content already built by callers.
+      ( "", rest )
     Just ( '(', rest ) ->
       let
         ( inner, after ) = splitParens rest (depth + 1)
