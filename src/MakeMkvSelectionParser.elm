@@ -190,6 +190,25 @@ factor =
     ]
 
 
+ordinal : Int -> String
+ordinal n =
+  String.fromInt n ++ ordinalSuffix n
+
+ordinalSuffix : Int -> String
+ordinalSuffix n =
+  let
+    tens = modBy 100 n
+    ones = modBy 10 n
+  in
+  if tens >= 11 && tens <= 13 then
+    "th"
+  else
+    case ones of
+      1 -> "st"
+      2 -> "nd"
+      3 -> "rd"
+      _ -> "th"
+
 selectable : Parser String
 selectable =
   oneOf
@@ -247,9 +266,14 @@ selectable =
     , getChompedString (chompWhile Char.isDigit)
       |> andThen
           (\s ->
-              if s == ""
-                then problem "expected digits"
-                else succeed ("matches if " ++ s ++ "th (or higher) track of same type and language")
+              if s == "" then
+                problem "expected digits"
+              else
+                case String.toInt s of
+                  Just n ->
+                    succeed ("matches if " ++ ordinal n ++ " (or higher) track of same type and language")
+                  Nothing ->
+                    problem "expected number"
           ) -- Any ISO 639-2/3 3-letter language code
     , getChompedString
       (succeed ()
