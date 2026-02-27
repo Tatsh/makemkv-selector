@@ -108,5 +108,5 @@
     "reactor": "elm reactor",
     "start": "npm run build && npx serve"
   },
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
