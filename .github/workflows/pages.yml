@@ -24,8 +24,15 @@ jobs:
           cp index.html main.js github-fork-ribbon.min.js deploy/
           SHA="${{ github.sha }}"
           SHORT_SHA="${SHA:0:7}"
-          REPLACE="<a href=\"https://github.com/Tatsh/makemkv-selection-translator/commit/${SHA}\">${SHORT_SHA}</a>"
-          sed -i "s|__DEPLOY_SHA__|${REPLACE}|g" deploy/index.html
+          TAG=$(git tag --points-at "$SHA" | sort -V | tail -1)
+          if [ -n "$TAG" ]; then
+            DEPLOY_LABEL="Version: <a href=\"https://github.com/Tatsh/makemkv-selection-translator/releases/tag/${TAG}\">${TAG}</a>"
+          else
+            DEPLOY_LABEL="Commit: <a href=\"https://github.com/Tatsh/makemkv-selection-translator/commit/${SHA}\">${SHORT_SHA}</a>"
+          fi
+          sed -i "s|__DEPLOY_LABEL__|${DEPLOY_LABEL}|g" deploy/index.html
+          DEPLOY_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          sed -i "s|__DEPLOY_DATE__|${DEPLOY_DATE}|g" deploy/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
