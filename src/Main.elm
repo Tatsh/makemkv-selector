@@ -238,9 +238,45 @@ viewTranslation result =
         (List.map (\( action, cond ) -> li [ class "list-group-item" ] (viewRule action cond)) items)
 
 
+conditionRendersAsListing : MakeMkvSelectionParser.Conditional -> Bool
+conditionRendersAsListing cond =
+  case cond of
+    MakeMkvSelectionParser.Prim _ ->
+      False
+    MakeMkvSelectionParser.Not child ->
+      conditionRendersAsListing child
+    MakeMkvSelectionParser.Or list ->
+      if List.length list > 1 then
+        True
+      else
+        case list of
+          [ single ] ->
+            conditionRendersAsListing single
+          _ ->
+            False
+    MakeMkvSelectionParser.And list ->
+      if List.length list > 1 then
+        True
+      else
+        case list of
+          [ single ] ->
+            conditionRendersAsListing single
+          _ ->
+            False
+
+
 viewRule : String -> MakeMkvSelectionParser.Conditional -> List (Html msg)
 viewRule action cond =
-  text (capitalize action ++ " ") :: viewConditional cond
+  let
+    content =
+      text (capitalize action ++ " ") :: viewConditional cond
+    suffix =
+      if conditionRendersAsListing cond then
+        []
+      else
+        [ text "." ]
+  in
+  content ++ suffix
 
 
 viewConditional : MakeMkvSelectionParser.Conditional -> List (Html msg)
