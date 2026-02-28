@@ -7,7 +7,6 @@ import Html.Events exposing (onClick, onInput)
 import Json.Decode as Decode
 import MakeMkvSelectionParser
 import Ports
-import Share
 
 
 -- Main
@@ -69,9 +68,8 @@ init flagsValue =
       let
         str =
           case f.shareParam of
-            Just short ->
-              Share.decodeSelection short
-                |> Result.withDefault (Maybe.withDefault "" f.savedSelection)
+            Just selection ->
+              selection
             Nothing ->
               Maybe.withDefault "" f.savedSelection
       in
@@ -135,11 +133,7 @@ update msg model =
       )
 
     ShareClicked ->
-      case Share.encodeSelection model.selectionStr of
-        Just short ->
-          ( model, Ports.requestShareUrl short )
-        Nothing ->
-          ( model, Cmd.none )
+      ( model, Ports.requestShareUrl model.selectionStr )
 
 
 parseResult : String -> Result String (List ( String, MakeMkvSelectionParser.Conditional ))
