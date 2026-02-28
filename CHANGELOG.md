@@ -9,6 +9,34 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
 
+## [0.0.3] - 2025-02-28
+
+### Added
+
+- Share: copy URL with selection in `?s=` (URI-encoded); on load, read `s`, prefill the input, and
+  overwrite `lastSelection` in sessionStorage. After consuming `?s=`, remove it from the address bar
+  (`history.replaceState`) so the URL is clean.
+- Deploy footer (CI): placeholder in HTML replaced with either "Version:" (link to releases/tag) when
+  the commit is tagged, or "Commit:" (link to commit) with 7-char SHA; plus deployment date/time in
+  ISO format, GMT, no milliseconds.
+
+### Changed
+
+- Share: use the raw selection string in `?s=` (URI-encoded) instead of a short base64url-encoded
+  format; Share encode/decode no longer used for the share URL.
+- Share button is inline to the right of the textbox (Bootstrap input-group); textbox fills the rest
+  of the row.
+- Translation: statement-style lines (e.g. "Unselect all tracks") end with a period; lines that
+  render as a list (OR/AND with multiple items, including nested) do not get a period.
+- Syntax reference: language code placeholder in the bullet text changed from "xxx" to "YYY".
+- CI: build step uses `yarn build:ci` (Elm with `--optimize`); prepare-artifact step injects deploy
+  label and date into the footer placeholders.
+
+### Removed
+
+- Source map generation and deployment (the generated map only pointed at the start of the bundle).
+  README documents that real source maps would require Elm compiler support.
+
 ## [0.0.2] - 2026-02-27
 
 ### Added
@@ -17,9 +45,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `+sel`/`-sel`/`+N`/`-N`/`=N` actions; `|` `&` `*` `!` `~` operators; Not conditional.
 - Condition tokens: `video`, `lossy`, `lossless`, `havelossless`, `forced`;
   `N` (nth track, with 1st/2nd/3rd ordinals); generic 3-letter ISO 639 language codes;
-  `single`, `core`, `havemulti`, `havecore`; top 30 languages plus Cantonese (`yue`) and Dutch (`nld`).
-- Structured translation: numbered top-level list; nested sublists with `|` and `&` bullets for OR/AND;
-  “not” for negated conditions.
+  `single`, `core`, `havemulti`, `havecore`; top 30 languages plus Cantonese (`yue`) and Dutch
+  (`nld`).
+- Structured translation: numbered top-level list; nested sublists with `|` and `&` bullets for
+  OR/AND; "not" for negated conditions.
 - Collapsible syntax reference with headers and bullets; clickable keywords append to the input and
   focus it with cursor at end.
 - Friendly parse error messages; input shows error outline when parse fails.
@@ -38,6 +67,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 First version.
 
-[unreleased]: https://github.com/Tatsh/makemkv-selection-translator/compare/v0.0.2...HEAD
+[unreleased]: https://github.com/Tatsh/makemkv-selection-translator/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/Tatsh/makemkv-selection-translator/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/Tatsh/makemkv-selection-translator/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/Tatsh/makemkv-selection-translator/releases/tag/v0.0.1
