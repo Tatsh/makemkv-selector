@@ -202,20 +202,22 @@ view model =
     []
     [ syntaxReference model.syntaxRefOpen
     , div [ class "mb-3" ]
-        [ viewInput
-            "text"
-            "-sel:all,+sel:((multi|stereo|mono)&favlang),..."
-            model.selectionStr
-            (case model.translationResult of
-                Err _ -> True
-                Ok _ -> False
-            )
-            SelectionStr
-        , button
-            [ class "btn btn-outline-primary btn-sm mt-2"
-            , onClick ShareClicked
+        [ div [ class "input-group" ]
+            [ viewInput
+                "text"
+                "-sel:all,+sel:((multi|stereo|mono)&favlang),..."
+                model.selectionStr
+                (case model.translationResult of
+                    Err _ -> True
+                    Ok _ -> False
+                )
+                SelectionStr
+            , button
+                [ class "btn btn-outline-primary"
+                , onClick ShareClicked
+                ]
+                [ text "Share" ]
             ]
-            [ text "Share" ]
         ]
     , div
         [ class "translation-output p-2 rounded bg-body-secondary border" ]

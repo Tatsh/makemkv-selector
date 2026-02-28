@@ -22,6 +22,10 @@ jobs:
         run: |
           mkdir -p deploy
           cp index.html main.js github-fork-ribbon.min.js deploy/
+          SHA="${{ github.sha }}"
+          SHORT_SHA="${SHA:0:7}"
+          REPLACE="<a href=\"https://github.com/Tatsh/makemkv-selection-translator/commit/${SHA}\">${SHORT_SHA}</a>"
+          sed -i "s|__DEPLOY_SHA__|${REPLACE}|g" deploy/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
