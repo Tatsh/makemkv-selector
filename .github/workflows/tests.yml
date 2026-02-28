@@ -1,0 +1,33 @@
+jobs:
+  test:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v6'
+      - name: 'Install dependencies (Yarn)'
+        run: 'yarn'
+      - name: 'Tests'
+        run: |
+          set +e
+          yarn test --report json 2>&1 | tee test-output.jsonl > /dev/null
+          test_exit=$?
+          while IFS= read -r line; do
+            jq -r '
+              if .event == "runStart" then "Running \(.testCount) tests (fuzz: \(.fuzzRuns), seed: \(.initialSeed))\n"
+              elif .event == "testCompleted" then
+                (if .status == "pass" then "  ✓ " else "  ✗ " end) + (.labels | join(" > ")) + " (\(.duration)ms)" +
+                (if .failures != [] then "\n" + (.failures | map("    " + .) | join("\n")) else "" end)
+              elif .event == "runComplete" then "\nPassed: \(.passed), Failed: \(.failed), Duration: \(.duration)ms"
+              else empty end
+            ' <<< "$line"
+          done < test-output.jsonl
+          exit $test_exit
+name: 'Tests'
+'on':
+  pull_request:
+    branches:
+      - 'master'
+  push:
+    branches:
+      - 'master'
+permissions:
+  contents: 'read'

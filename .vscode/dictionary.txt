@@ -3,6 +3,7 @@ cmnt
 coveragerc
 dflt
 docstrings
+elif
 esbenp
 favlang
 foxundermoon

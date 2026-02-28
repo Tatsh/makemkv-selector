@@ -1,4 +1,4 @@
-module Main exposing (main)
+module Main exposing (capitalize, conditionRendersAsListing, main)
 
 import Browser
 import Html exposing (Html, button, code, div, h6, input, li, span, text, ul)

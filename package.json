@@ -40,6 +40,7 @@
     "@prettier/plugin-xml": "^3.4.2",
     "cspell": "^9.7.0",
     "elm": "^0.19.1-6",
+    "elm-test": "0.19.1-revision17",
     "markdownlint-cli2": "^0.21.0",
     "prettier": "^3.8.1",
     "prettier-plugin-ini": "^1.3.0",
@@ -107,7 +108,8 @@
     "format": "prettier -w . && yarn markdownlint-cli2 --fix",
     "qa": "yarn eslint && yarn check-spelling && yarn check-formatting",
     "reactor": "elm reactor",
-    "start": "npm run build && npx serve"
+    "start": "npm run build && npx serve",
+    "test": "elm-test"
   },
   "version": "0.0.3"
 }
