@@ -13,6 +13,4 @@
 /dist/
 elm-stuff/
 /main.js
-/main.js.map
 node_modules/
-/scripts/sourcemap-gen/sourcemap-gen.js
