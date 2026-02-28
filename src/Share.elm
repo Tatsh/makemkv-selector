@@ -294,7 +294,11 @@ takeShortToken s =
       in
       ( "6" ++ digits, tail )
     Just ( c, rest ) ->
-      if List.member c singleCodes then
+      -- Prefer 3-letter language code when possible (e.g. "fra") so we don't
+      -- consume "f" as favlang and "ra" as all.
+      if String.length s >= 3 && String.all Char.isLower (String.left 3 s) then
+        ( String.left 3 s, String.dropLeft 3 s )
+      else if List.member c singleCodes then
         ( String.fromChar c, rest )
       else if Char.isLower c then
         ( String.left 3 s, String.dropLeft 3 s )
