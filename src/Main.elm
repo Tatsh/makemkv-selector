@@ -191,7 +191,7 @@ syntaxReference isOpen =
             [ li [] [ tokClickable "all", text " ", tokClickable "video", text " ", tokClickable "audio", text " ", tokClickable "subtitle", text " ", tokClickable "mvcvideo", text " ", tokClickable "favlang", text " ", tokClickable "nolang", text " ", tokClickable "special", text " ", tokClickable "forced" ]
             , li [] [ tokClickable "mono", text " ", tokClickable "stereo", text " ", tokClickable "multi", text " ", tokClickable "havemulti", text " ", tokClickable "lossy", text " ", tokClickable "lossless", text " ", tokClickable "havelossless", text " ", tokClickable "core", text " ", tokClickable "havecore", text " ", tokClickable "single" ]
             , li [] [ tokClickable "N", text " — nth track of same type and language" ]
-            , li [] [ tokClickable "xxx", text " — 3-letter language code (e.g. ", tokClickable "eng", text " ", tokClickable "fra", text ")" ]
+            , li [] [ tokClickable "YYY", text " — 3-letter language code (e.g. ", tokClickable "eng", text " ", tokClickable "fra", text ")" ]
             ]
         ]
     ]
