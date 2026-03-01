@@ -119,7 +119,9 @@
           el.setSelectionRange(len, len);
         }
       });
-      var gf = new githubFork({ url: 'https://github.com/Tatsh/makemkv-selection-translator' });
+      if (githubForkRibbon) {
+        githubForkRibbon.config({ url: '//github.com/Tatsh/makemkv-selection-translator' });
+      }
     </script>
   </body>
 </html>
