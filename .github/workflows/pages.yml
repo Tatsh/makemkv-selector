@@ -4,14 +4,15 @@ concurrency:
   group: pages
 jobs:
   pages:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    environment: ${{ github.ref_type == 'branch' && 'github-pages' || '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - id: repo
+        name: Set repo name
+        run: echo "name=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Install dependencies
@@ -22,29 +23,58 @@ jobs:
         run: |
           mkdir -p deploy
           cp index.html main.js github-fork-ribbon.min.js deploy/
-          SHA="${{ github.sha }}"
-          SHORT_SHA="${SHA:0:7}"
-          TAG=$(git tag --points-at "$SHA" | sort -V | tail -1)
-          if [ -n "$TAG" ]; then
-            DEPLOY_LABEL="Version: <a href=\"https://github.com/Tatsh/makemkv-selection-translator/releases/tag/${TAG}\">${TAG}</a>"
+          sha="${{ github.sha }}"
+          short_sha="${sha:0:7}"
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            deploy_label="Version: <a href=\"https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}\">${{ github.ref_name }}</a>"
           else
-            DEPLOY_LABEL="Commit: <a href=\"https://github.com/Tatsh/makemkv-selection-translator/commit/${SHA}\">${SHORT_SHA}</a>"
+            deploy_label="Commit: <a href=\"https://github.com/${{ github.repository }}/commit/${sha}\">${short_sha}</a>"
           fi
-          sed -i "s|__DEPLOY_LABEL__|${DEPLOY_LABEL}|g" deploy/index.html
-          DEPLOY_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          sed -i "s|__DEPLOY_DATE__|${DEPLOY_DATE}|g" deploy/index.html
-      - name: Upload artifact
+          sed -i "s|__DEPLOY_LABEL__|${deploy_label}|g" deploy/index.html
+          deploy_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          sed -i "s|__DEPLOY_DATE__|${deploy_date}|g" deploy/index.html
+      - if: github.ref_type == 'branch'
+        name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: ${{github.workspace}}/deploy
-      - id: deployment
+      - if: github.ref_type == 'tag'
+        name: Create release archives
+        run: |
+          repo_name="${{ steps.repo.outputs.name }}"
+          version="${{ github.ref_name }}"
+          dir="${repo_name}-${version}"
+          mkdir -p "$dir"
+          cp deploy/index.html deploy/main.js deploy/github-fork-ribbon.min.js "${dir}/"
+          zip -r "${repo_name}-${version}.zip" "$dir"
+          tar czvf "${repo_name}-${version}.tar.gz" "$dir"
+      - if: github.ref_type == 'tag'
+        name: Attest
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            ${{ github.workspace }}/${{ steps.repo.outputs.name }}-${{ github.ref_name }}.tar.gz
+            ${{ github.workspace }}/${{ steps.repo.outputs.name }}-${{ github.ref_name }}.zip
+      - if: github.ref_type == 'tag'
+        name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          fail_on_unmatched_files: true
+          files: |
+            ${{ github.workspace }}/${{ steps.repo.outputs.name }}-${{ github.ref_name }}.zip
+            ${{ github.workspace }}/${{ steps.repo.outputs.name }}-${{ github.ref_name }}.tar.gz
+      - if: github.ref_type == 'branch'
+        id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
 name: GitHub Pages
 'on':
   push:
     branches: [master]
+    tags:
+      - 'v*.*.*'
 permissions:
-  contents: read
+  attestations: write
+  contents: write
   id-token: write
   pages: write

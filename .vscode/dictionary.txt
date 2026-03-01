@@ -1,6 +1,7 @@
 bsky
 cmnt
 coveragerc
+czvf
 dflt
 docstrings
 elif
@@ -26,6 +27,7 @@ prec
 rparen
 schemafile
 shellformat
+softprops
 tatsh
 udvare
 uminus
